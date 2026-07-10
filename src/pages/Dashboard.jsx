@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import appwriteService from "../appwrite/config";
+import postService from "../api/postApi";
+import bookmarkService from "../api/bookmarkApi";
 import { Container, PostCard } from "../components";
 
 function Dashboard() {
@@ -12,11 +13,11 @@ function Dashboard() {
     useEffect(() => {
         if (!userData?.$id) return;
 
-        appwriteService.getUserPosts(userData.$id).then((response) => {
+        postService.getUserPosts(userData.$id).then((response) => {
             setPosts(response?.documents || []);
         });
 
-        appwriteService.getBookmarks(userData.$id).then((response) => {
+        bookmarkService.getBookmarks(userData.$id).then((response) => {
             setBookmarks(response?.documents || []);
         });
     }, [userData?.$id]);
@@ -26,10 +27,10 @@ function Dashboard() {
         const drafts = posts.length - published;
 
         return [
-            {label: "Total posts", value: posts.length},
-            {label: "Published", value: published},
-            {label: "Drafts", value: drafts},
-            {label: "Saved", value: bookmarks.length},
+            { label: "Total posts", value: posts.length },
+            { label: "Published", value: published },
+            { label: "Drafts", value: drafts },
+            { label: "Saved", value: bookmarks.length },
         ];
     }, [posts, bookmarks]);
 
@@ -40,16 +41,16 @@ function Dashboard() {
             <Container>
                 <div className="mb-8 rounded-3xl bg-slate-950 p-6 text-white shadow-sm md:p-8">
                     <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
-                    <div>
-                        <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-300">Dashboard</p>
-                        <h1 className="text-3xl font-black tracking-tight md:text-5xl">
-                            Welcome back, {userData?.name || "writer"}
-                        </h1>
-                        <p className="mt-3 max-w-2xl text-slate-300">Track publishing progress, manage drafts, and jump back into your writing workflow.</p>
-                    </div>
-                    <Link to="/dashboard/posts/new" className="inline-flex rounded-full bg-white px-5 py-3 font-semibold text-slate-950 hover:bg-emerald-100">
-                        New post
-                    </Link>
+                        <div>
+                            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-300">Dashboard</p>
+                            <h1 className="text-3xl font-black tracking-tight md:text-5xl">
+                                Welcome back, {userData?.name || "writer"}
+                            </h1>
+                            <p className="mt-3 max-w-2xl text-slate-300">Track publishing progress, manage drafts, and jump back into your writing workflow.</p>
+                        </div>
+                        <Link to="/dashboard/posts/new" className="inline-flex rounded-full bg-white px-5 py-3 font-semibold text-slate-950 hover:bg-emerald-100">
+                            New post
+                        </Link>
                     </div>
                 </div>
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Query } from "appwrite";
-import appwriteService from "../appwrite/config";
+import profileService from "../api/profileApi";
+import postService from "../api/postApi";
 import { Container, PostCard } from "../components";
 
 function AuthorProfile() {
@@ -10,9 +10,10 @@ function AuthorProfile() {
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        appwriteService.getProfile(id).then(setProfile);
-        appwriteService.getPublishedPosts([Query.equal("userID", id)]).then((response) => {
-            setPosts(response?.documents || []);
+        profileService.getProfile(id).then(setProfile);
+        postService.getPublishedPosts().then((response) => {
+            const authored = (response?.documents || []).filter((post) => post.userID === id);
+            setPosts(authored);
         });
     }, [id]);
 

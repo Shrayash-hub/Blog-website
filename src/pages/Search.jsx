@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import appwriteService from "../appwrite/config";
+import postService from "../api/postApi";
 import { Container, PostCard } from "../components";
 
 function Search() {
@@ -11,14 +11,14 @@ function Search() {
     useEffect(() => {
         const searchTerm = searchParams.get("q") || "";
 
-        appwriteService.searchPosts(searchTerm).then((response) => {
+        postService.searchPosts(searchTerm).then((response) => {
             setPosts(response?.documents || []);
         });
     }, [searchParams]);
 
     const submitSearch = (event) => {
         event.preventDefault();
-        setSearchParams(query ? {q: query} : {});
+        setSearchParams(query ? { q: query } : {});
     };
 
     return (
@@ -27,7 +27,7 @@ function Search() {
                 <div className="mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
                     <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">Discover</p>
                     <h1 className="text-4xl font-black tracking-tight text-slate-950 md:text-6xl">Search posts</h1>
-                    <p className="mt-4 max-w-2xl text-slate-600">Find articles by title using Appwrite indexed search.</p>
+                    <p className="mt-4 max-w-2xl text-slate-600">Find articles by title.</p>
                 </div>
 
                 <form onSubmit={submitSearch} className="mb-8 flex gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">

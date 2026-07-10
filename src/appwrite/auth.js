@@ -32,21 +32,21 @@ export class AuthService {
         this.account = new Account(this.client);
     }
 
-    async createAccount({email, password, name}) {
+    async createAccount({ email, password, name }) {
         if (!this.isConfigured) throw new Error("Appwrite auth is not configured.");
 
         // New user account create karte hain unique ID ke saath.
         const userAccount = await this.account.create(ID.unique(), email, password, name);
 
-        if(userAccount){
+        if (userAccount) {
             // Account banne ke baad user ko direct login kara dete hain.
-            return this.login({email, password});
+            return this.login({ email, password });
         }
 
         return userAccount;
     }
 
-    async login({email, password}) {
+    async login({ email, password }) {
         if (!this.isConfigured) throw new Error("Appwrite auth is not configured.");
 
         try {

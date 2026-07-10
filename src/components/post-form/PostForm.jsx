@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Button, Input, RTE, Select } from "..";
-import appwriteService from "../../appwrite/config";
+import postService from "../../api/postApi";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -28,7 +28,7 @@ export default function PostForm({ post }) {
     const [imageSize, setImageSize] = useState(null);
     const [cropSelection, setCropSelection] = useState({ x: 10, y: 10, width: 80 });
     const currentImageId = post?.featuredImage || post?.featuredimage || post?.image;
-    const currentImageUrl = appwriteService.getFileView(currentImageId);
+    const currentImageUrl = postService.getFileView(currentImageId);
     const titleValue = useWatch({ control, name: "title" });
     const selectedImage = useWatch({ control, name: "image" });
     const imageInput = register("image", {
@@ -144,7 +144,7 @@ export default function PostForm({ post }) {
             if (post) {
                 // Edit mode: agar new image select ki hai to pehle upload karte hain.
                 const preparedImage = normalizedData.image?.[0] ? await resizeFeaturedImage(normalizedData.image[0]) : null;
-                const file = preparedImage ? await appwriteService.uploadFile(preparedImage) : null;
+                const file = preparedImage ? await postService.uploadFile(preparedImage) : null;
 
                 if (preparedImage && !file) {
                     setFormError("Image upload failed. Please try again with a smaller image.");
@@ -152,15 +152,14 @@ export default function PostForm({ post }) {
                 }
 
                 if (file) {
-                    // New image upload ho gayi to old featured image delete kar dete hain.
-                    appwriteService.deleteFile(post.featuredImage);
+                    // Old file deleted automatically by the backend on update.
                 }
 
                 // Post update karte hain; image change nahi hui to featuredImage undefined rahega.
-                const dbPost = await appwriteService.updatePost(post.$id, {
+                const dbPost = await postService.updatePost(post.$id, {
                     ...normalizedData,
                     tags: normalizedData.tags ? normalizedData.tags.split(",").map((tag) => tag.trim()).filter(Boolean) : [],
-                    featuredImage: file ? file.$id : undefined,
+                    featuredImage: file ? file.filename : undefined,
                 });
 
                 if (dbPost) {
@@ -169,21 +168,21 @@ export default function PostForm({ post }) {
                     return;
                 }
 
-                setFormError("Post could not be saved. Please check your Appwrite permissions and try again.");
+                setFormError("Post could not be saved. Please try again.");
             } else {
                 // Add mode: new post create karne se pehle image upload karna zaroori hai.
                 const preparedImage = await resizeFeaturedImage(normalizedData.image?.[0]);
-                const file = preparedImage ? await appwriteService.uploadFile(preparedImage) : null;
+                const file = preparedImage ? await postService.uploadFile(preparedImage) : null;
 
                 if (!file) {
                     setFormError("Image upload failed. Please choose a featured image and try again.");
                     return;
                 }
 
-                normalizedData.featuredImage = file.$id;
+                normalizedData.featuredImage = file.filename;
 
                 // Current logged-in user ki ID ke saath post create hota hai.
-                const dbPost = await appwriteService.createPost({
+                const dbPost = await postService.createPost({
                     ...normalizedData,
                     tags: normalizedData.tags ? normalizedData.tags.split(",").map((tag) => tag.trim()).filter(Boolean) : [],
                     userID: userData.$id,
@@ -194,7 +193,7 @@ export default function PostForm({ post }) {
                     return;
                 }
 
-                setFormError("Post could not be published. Please check your Appwrite permissions and try again.");
+                setFormError("Post could not be published. Please try again.");
             }
         } catch {
             setFormError("Something went wrong while publishing. Please try again.");
@@ -274,9 +273,8 @@ export default function PostForm({ post }) {
                             setIsDraggingImage(false);
                             setDroppedImage(event.dataTransfer.files);
                         }}
-                        className={`rounded-2xl border border-dashed p-4 text-center transition ${
-                            isDraggingImage ? "border-emerald-400 bg-emerald-50" : "border-slate-300 bg-white"
-                        }`}
+                        className={`rounded-2xl border border-dashed p-4 text-center transition ${isDraggingImage ? "border-emerald-400 bg-emerald-50" : "border-slate-300 bg-white"
+                            }`}
                     >
                         <input
                             type="file"
@@ -302,48 +300,48 @@ export default function PostForm({ post }) {
                 {(imagePreview || currentImageUrl) && (
                     <div className="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white">
                         <div className="bg-stone-100 p-3">
-                        <div
-                            className="relative w-full cursor-crosshair overflow-hidden rounded-xl bg-slate-950/5"
-                            style={{ aspectRatio: imageSize ? `${imageSize.width} / ${imageSize.height}` : "16 / 9" }}
-                            onClick={updateCropPosition}
-                            onPointerMove={(event) => {
-                                if (event.buttons === 1) updateCropPosition(event);
-                            }}
-                        >
-                            <img
-                                src={imagePreview || currentImageUrl}
-                                alt="Featured preview"
-                                className="h-full w-full object-contain"
-                                onLoad={(event) => {
-                                    const size = {
-                                        width: event.currentTarget.naturalWidth,
-                                        height: event.currentTarget.naturalHeight,
-                                    };
-                                    const maxWidth = getMaxCropWidth(size);
-                                    const width = Math.min(80, maxWidth);
-                                    const height = getCropHeight(width, size);
-
-                                    setImageSize(size);
-                                    setCropSelection({
-                                        width,
-                                        x: (100 - width) / 2,
-                                        y: (100 - height) / 2,
-                                    });
-                                }}
-                            />
                             <div
-                                className="absolute border-2 border-emerald-400 bg-emerald-400/10 shadow-[0_0_0_9999px_rgba(15,23,42,0.55)]"
-                                style={{
-                                    left: `${cropSelection.x}%`,
-                                    top: `${cropSelection.y}%`,
-                                    width: `${cropSelection.width}%`,
-                                    height: `${cropHeight}%`,
+                                className="relative w-full cursor-crosshair overflow-hidden rounded-xl bg-slate-950/5"
+                                style={{ aspectRatio: imageSize ? `${imageSize.width} / ${imageSize.height}` : "16 / 9" }}
+                                onClick={updateCropPosition}
+                                onPointerMove={(event) => {
+                                    if (event.buttons === 1) updateCropPosition(event);
                                 }}
-                            />
-                            <div className="absolute inset-x-3 bottom-3 rounded-full bg-slate-950/75 px-3 py-1 text-center text-xs font-semibold text-white">
-                                Click or drag to move the crop window
+                            >
+                                <img
+                                    src={imagePreview || currentImageUrl}
+                                    alt="Featured preview"
+                                    className="h-full w-full object-contain"
+                                    onLoad={(event) => {
+                                        const size = {
+                                            width: event.currentTarget.naturalWidth,
+                                            height: event.currentTarget.naturalHeight,
+                                        };
+                                        const maxWidth = getMaxCropWidth(size);
+                                        const width = Math.min(80, maxWidth);
+                                        const height = getCropHeight(width, size);
+
+                                        setImageSize(size);
+                                        setCropSelection({
+                                            width,
+                                            x: (100 - width) / 2,
+                                            y: (100 - height) / 2,
+                                        });
+                                    }}
+                                />
+                                <div
+                                    className="absolute border-2 border-emerald-400 bg-emerald-400/10 shadow-[0_0_0_9999px_rgba(15,23,42,0.55)]"
+                                    style={{
+                                        left: `${cropSelection.x}%`,
+                                        top: `${cropSelection.y}%`,
+                                        width: `${cropSelection.width}%`,
+                                        height: `${cropHeight}%`,
+                                    }}
+                                />
+                                <div className="absolute inset-x-3 bottom-3 rounded-full bg-slate-950/75 px-3 py-1 text-center text-xs font-semibold text-white">
+                                    Click or drag to move the crop window
+                                </div>
                             </div>
-                        </div>
                         </div>
                         <div className="border-t border-slate-100 px-3 py-2 text-xs font-medium text-slate-500">
                             Only the highlighted 16:9 area will be used for post cards and article headers.

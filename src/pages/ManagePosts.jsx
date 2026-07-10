@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import appwriteService from "../appwrite/config";
+import postService from "../api/postApi";
 import { Button, Container } from "../components";
 
 function ManagePosts() {
@@ -11,16 +11,15 @@ function ManagePosts() {
     useEffect(() => {
         if (!userData?.$id) return;
 
-        appwriteService.getUserPosts(userData.$id).then((response) => {
+        postService.getUserPosts(userData.$id).then((response) => {
             setPosts(response?.documents || []);
         });
     }, [userData?.$id]);
 
     const removePost = async (post) => {
-        const deleted = await appwriteService.deletePost(post.$id);
+        const deleted = await postService.deletePost(post.$id);
 
         if (deleted) {
-            if (post.featuredImage) await appwriteService.deleteFile(post.featuredImage);
             setPosts((current) => current.filter((item) => item.$id !== post.$id));
         }
     };

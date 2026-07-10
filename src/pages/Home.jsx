@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import appwriteService from '../appwrite/config'
+import { useEffect, useState } from 'react';
+import postService from '../api/postApi'
 import { Container, PostCard } from '../components';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -11,8 +11,8 @@ function Home() {
     const authStatus = useSelector((state) => state.auth.status)
 
     useEffect(() => {
-        appwriteService.getPublishedPosts().then((posts) => {
-            if(posts) setPosts(posts.documents)
+        postService.getPublishedPosts().then((posts) => {
+            if (posts) setPosts(posts.documents)
         })
     }, [])
 
@@ -21,7 +21,7 @@ function Home() {
         navigate(query ? `/search?q=${encodeURIComponent(query)}` : "/search")
     }
 
-    if(!authStatus){
+    if (!authStatus) {
         return (
             <div className="w-full bg-stone-50">
                 <Container>
@@ -109,7 +109,7 @@ function Home() {
     }
 
     return (
-         <div className='w-full bg-stone-50 pb-14'>
+        <div className='w-full bg-stone-50 pb-14'>
             <Container>
                 <section className="grid gap-8 py-12 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-end">
                     <div>
@@ -125,7 +125,7 @@ function Home() {
                         <p className="text-sm font-semibold text-slate-500">Project stack</p>
                         <div className="mt-4 grid grid-cols-2 gap-3 text-sm font-bold text-slate-800">
                             <span className="rounded-xl bg-stone-100 px-3 py-2">React</span>
-                            <span className="rounded-xl bg-stone-100 px-3 py-2">Appwrite</span>
+                            <span className="rounded-xl bg-stone-100 px-3 py-2">MongoDB</span>
                             <span className="rounded-xl bg-stone-100 px-3 py-2">Redux</span>
                             <span className="rounded-xl bg-stone-100 px-3 py-2">TinyMCE</span>
                         </div>
@@ -136,7 +136,7 @@ function Home() {
                         <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">Featured posts</p>
                         <h2 className="text-3xl font-black tracking-tight text-slate-950 md:text-5xl">Latest writing</h2>
                     </div>
-                    <p className="max-w-xl text-slate-600">Search and read published posts from the Appwrite-backed content collection.</p>
+                    <p className="max-w-xl text-slate-600">Search and read published posts from the MongoDB-backed content collection.</p>
                 </div>
                 <form onSubmit={submitSearch} className="mb-8 flex gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
                     <input

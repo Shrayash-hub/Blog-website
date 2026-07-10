@@ -1,9 +1,9 @@
-import {useState} from 'react';
-import authService from '@/appwrite/auth';
-import appwriteService from '@/appwrite/config';
+import { useState } from 'react';
+import authService from '@/api/authApi';
+import profileService from '@/api/profileApi';
 import { Link, useNavigate } from 'react-router-dom';
 import { login as authLogin } from '../store/authSlice'
-import {Button, Input, Logo} from './index'
+import { Button, Input, Logo } from './index'
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 
@@ -14,17 +14,17 @@ function Signup() {
     const dispatch = useDispatch()
     const [error, setError] = useState("")
     const [accountExists, setAccountExists] = useState(false)
-    const {register, handleSubmit} = useForm()
+    const { register, handleSubmit } = useForm()
 
-    const create = async(data) => {
+    const create = async (data) => {
         setError("")
         setAccountExists(false)
         try {
             const userData = await authService.createAccount(data)
-            if(userData){
+            if (userData) {
                 const userData = await authService.getCurrentUser()
-                if(userData) {
-                    await appwriteService.upsertProfile({
+                if (userData) {
+                    await profileService.upsertProfile({
                         userID: userData.$id,
                         name: userData.name,
                         bio: "",
@@ -48,7 +48,7 @@ function Signup() {
             <div className={`mx-auto w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-sm`}>
                 <div className="mb-2 flex justify-center">
                     <span className="inline-block w-full max-w-[100px]">
-                        <Logo width ="100%" />
+                        <Logo width="100%" />
                     </span>
                 </div>
                 <h2 className="text-center text-2xl font-bold leading-tight text-slate-950">Sign up to create account</h2>
@@ -72,35 +72,36 @@ function Signup() {
                 <form onSubmit={handleSubmit(create)} className="mt-8">
                     <div className='space-y-5'>
                         <Input
-                        label = "Full Name: "
-                        placeholder = "Enter your full name"
-                        autoComplete="name"
-                        {...register("name", {
-                            required: true,
-                        })}
+                            label="Full Name: "
+                            placeholder="Enter your full name"
+                            autoComplete="name"
+                            {...register("name", {
+                                required: true,
+                            })}
                         />
 
-                        <Input 
-                        label = "Email: "
-                        placeholder = "Enter your Email"
-                        type="email"
-                        autoComplete="email"
-                        {...register("email", {
-                            required: true,
-                            validate: {
-                                matchPatern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-                                "Email address must be a valid address",
-                            }
-                        })}
+                        <Input
+                            label="Email: "
+                            placeholder="Enter your Email"
+                            type="email"
+                            autoComplete="email"
+                            {...register("email", {
+                                required: true,
+                                validate: {
+                                    matchPatern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
+                                        "Email address must be a valid address",
+                                }
+                            })}
                         />
 
-                        <Input 
-                        label="Password"
-                        type="password"
-                        placeholder="Enter your password"
-                        autoComplete="new-password"
-                        {...register("password", {
-                            required: true,})}
+                        <Input
+                            label="Password"
+                            type="password"
+                            placeholder="Enter your password"
+                            autoComplete="new-password"
+                            {...register("password", {
+                                required: true,
+                            })}
                         />
 
                         <Button type="submit" className='w-full hover:bg-emerald-700'>

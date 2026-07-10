@@ -1,9 +1,9 @@
-import appwriteService from '../appwrite/config'
+import postService from '../api/postApi'
 import { Link } from 'react-router-dom';
 
-function PostCard({$id, title, featuredImage, featuredimage, image, excerpt, tags}){
+function PostCard({ $id, title, featuredImage, featuredimage, image, excerpt, tags }) {
     const imageId = featuredImage || featuredimage || image
-    const imageUrl = appwriteService.getFileView(imageId)
+    const imageUrl = postService.getFileView(imageId)
 
     return (
         <Link to={`/post/${$id}`} className="group block h-full">
