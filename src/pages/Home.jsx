@@ -21,135 +21,158 @@ function Home() {
         navigate(query ? `/search?q=${encodeURIComponent(query)}` : "/search")
     }
 
+    // ── Logged-out landing page ──────────────────────────────────────────────
     if (!authStatus) {
         return (
-            <div className="w-full bg-stone-50">
-                <Container>
-                    <section className="min-h-[calc(100vh-76px)] py-10">
-                        <div className="mx-auto max-w-5xl pt-10 text-center md:pt-16">
-                            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-800">
-                                <span className="h-2 w-2 rounded-full bg-emerald-600" />
-                                Independent stories and dev notes
-                            </div>
-                            <h1 className="mx-auto max-w-5xl text-5xl font-black leading-[1.02] tracking-tight text-slate-950 md:text-7xl">
-                                Read practical articles on code, product thinking, and modern web development.
-                            </h1>
-                            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-                                Explore concise tutorials, project breakdowns, and engineering notes written for curious readers. No account is needed to browse the publication.
-                            </p>
-                            <div className="mt-8 flex flex-wrap justify-center gap-3">
-                                <Link className="rounded-full bg-slate-950 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-emerald-700" to="/posts">
-                                    Start reading
-                                </Link>
-                                <Link className="rounded-full border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-800 shadow-sm transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-800" to="/search">
-                                    Search library
-                                </Link>
-                                <Link className="rounded-full px-6 py-3 font-semibold text-slate-600 transition hover:text-slate-950" to="/login">
-                                    Sign in to save
-                                </Link>
-                            </div>
-
-                            <div className="mx-auto mt-10 grid max-w-4xl gap-3 text-left sm:grid-cols-3">
-                                {[
-                                    ["Browse", "Read published articles without creating an account."],
-                                    ["Discover", "Use search and tags to find useful topics."],
-                                    ["Save later", "Sign in only when you want a personal reading list."],
-                                ].map(([title, copy]) => (
-                                    <div key={title} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                                        <h2 className="font-black text-slate-950">{title}</h2>
-                                        <p className="mt-2 text-sm leading-6 text-slate-600">{copy}</p>
-                                    </div>
-                                ))}
-                            </div>
+            <div className="w-full bg-white">
+                {/* Full-bleed hero */}
+                <div className="relative flex min-h-[640px] w-full flex-col justify-center overflow-hidden bg-stone-800 bg-cover bg-center pt-16 md:min-h-[740px] md:pt-20" style={{ backgroundImage: "url('/hero-bg.jpg')" }}>
+                    {/* Dark gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/30 to-black/15" />
+                    <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-36">
+                        <p className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-500 mb-4 text-[11px] font-bold uppercase tracking-[0.25em] text-white/70">
+                            Stories, insights &amp; inspiration
+                        </p>
+                        <h1 className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 max-w-3xl font-serif text-5xl font-semibold leading-[1.1] text-white md:text-7xl">
+                            Discover stories that matter to you.
+                        </h1>
+                        <p className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-150 mt-6 max-w-xl text-base leading-7 text-white/75 md:text-lg">
+                            Explore thoughtful articles, personal perspectives, and engaging content from writers around the world.
+                        </p>
+                        <div className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-300 mt-8 flex flex-wrap gap-3">
+                            <Link
+                                to="/posts"
+                                className="rounded-sm bg-white px-6 py-3 text-[11px] font-bold uppercase tracking-widest text-stone-950 transition-colors duration-150 hover:bg-stone-100 active:scale-[0.98]"
+                            >
+                                Start reading
+                            </Link>
+                            <Link
+                                to="/search"
+                                className="rounded-sm border border-white/40 bg-transparent px-6 py-3 text-[11px] font-bold uppercase tracking-widest text-white transition-colors duration-150 hover:bg-white/10 active:scale-[0.98]"
+                            >
+                                Search library
+                            </Link>
+                            <Link
+                                to="/login"
+                                className="rounded-sm px-6 py-3 text-[11px] font-bold uppercase tracking-widest text-white/70 transition-colors duration-150 hover:text-white"
+                            >
+                                Sign in to save
+                            </Link>
                         </div>
-                    </section>
+                    </div>
+                </div>
 
-                    <section className="border-t border-slate-200 py-10">
-                        <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+                {/* Feature cards */}
+                <Container>
+                    <div className="py-16">
+                        <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                             <div>
-                                <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">Public library</p>
-                                <h2 className="text-3xl font-black tracking-tight text-slate-950 md:text-5xl">Start with the latest posts</h2>
+                                <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.22em] text-stone-500">Featured stories</p>
+                                <h2 className="font-serif text-4xl font-semibold tracking-tight text-stone-950 md:text-5xl">
+                                    Start with the latest posts
+                                </h2>
                             </div>
-                            <Link className="font-semibold text-emerald-700 hover:underline" to="/posts">View all posts</Link>
+                            <Link className="text-sm font-semibold uppercase tracking-widest text-stone-500 transition-colors hover:text-stone-950" to="/posts">
+                                View all →
+                            </Link>
                         </div>
 
                         {posts.length > 0 ? (
                             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                                {posts.slice(0, 3).map((post) => (
-                                    <PostCard key={post.$id} {...post} />
+                                {posts.slice(0, 3).map((post, i) => (
+                                    <div
+                                        key={post.$id}
+                                        className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-500"
+                                        style={{ animationDelay: `${i * 75}ms` }}
+                                    >
+                                        <PostCard {...post} />
+                                    </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-                                <h2 className="text-2xl font-black text-slate-950">The library is being prepared.</h2>
-                                <p className="mt-3 max-w-2xl leading-7 text-slate-600">
-                                    Published posts will appear here as soon as authors add content. Visitors can still use the navigation to explore the site structure.
-                                </p>
+                            <div className="rounded-sm border border-dashed border-stone-300 p-10 text-center">
+                                <h2 className="font-serif text-2xl font-semibold text-stone-950">Coming soon</h2>
+                                <p className="mt-3 text-stone-500">New articles will appear here as writers publish their stories.</p>
                             </div>
                         )}
-                    </section>
+                    </div>
 
-                    <section className="border-t border-slate-200 py-10">
-                        <div className="grid gap-5 md:grid-cols-3">
-                            {[
-                                ["Read freely", "Most content is public, so visitors can browse without friction."],
-                                ["Discover faster", "Search, tags, and author pages make the archive easier to navigate."],
-                                ["Join when useful", "Accounts are for saving posts and unlocking the writer dashboard, not for basic reading."],
-                            ].map(([title, copy]) => (
-                                <div key={title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                                    <h2 className="text-xl font-black text-slate-950">{title}</h2>
-                                    <p className="mt-3 leading-7 text-slate-600">{copy}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
+                    {/* Value prop row */}
+                    <div className="grid gap-6 border-t border-stone-200 py-16 md:grid-cols-3">
+                        {[
+                            ["Read freely",     "Browse and explore content without creating an account."],
+                            ["Discover easily", "Search, tags, and author profiles help you find what matters."],
+                            ["Join when ready", "Create an account to save favorites and start your own blog."],
+                        ].map(([title, copy], i) => (
+                            <div
+                                key={title}
+                                className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-500 border-l-2 border-stone-200 pl-5"
+                                style={{ animationDelay: `${i * 75}ms` }}
+                            >
+                                <h3 className="font-serif text-xl font-semibold text-stone-950">{title}</h3>
+                                <p className="mt-2 text-sm leading-6 text-stone-500">{copy}</p>
+                            </div>
+                        ))}
+                    </div>
                 </Container>
             </div>
         )
     }
 
+    // ── Logged-in feed page ──────────────────────────────────────────────────
     return (
-        <div className='w-full bg-stone-50 pb-14'>
-            <Container>
-                <section className="grid gap-8 py-12 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-end">
-                    <div>
-                        <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">Full-stack publishing</p>
-                        <h1 className="max-w-4xl text-5xl font-black leading-[1.02] tracking-tight text-slate-950 md:text-7xl">
-                            Ideas, tutorials, and dev notes in one clean CMS.
+        <div className='w-full bg-white pb-16'>
+            {/* Hero */}
+            <div className="relative flex min-h-[640px] w-full flex-col justify-center overflow-hidden bg-stone-800 bg-cover bg-center pt-16 md:min-h-[740px] md:pt-20" style={{ backgroundImage: "url('/hero-bg.jpg')" }}>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/30 to-black/10" />
+                <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-36">
+                    <div className="max-w-3xl">
+                        <p className="motion-safe:animate-in motion-safe:fade-in motion-safe:duration-500 mb-3 text-[11px] font-bold uppercase tracking-[0.25em] text-white/70">
+                            Your creative space
+                        </p>
+                        <h1 className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 font-serif text-5xl font-semibold leading-[1.1] text-white md:text-6xl">
+                            Write, share, and connect with readers.
                         </h1>
-                        <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-                            Browse polished articles, discover useful tags, and sign in to manage your own writing studio.
+                        <p className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-150 mt-5 text-base leading-7 text-white/75 md:text-lg">
+                            Discover inspiring content, save your favorites, and manage your own publishing space. Whether you're here to explore new ideas or share your own stories, you'll find everything you need to build your audience and express yourself through a seamless, distraction-free writing experience.
                         </p>
                     </div>
-                    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                        <p className="text-sm font-semibold text-slate-500">Project stack</p>
-                        <div className="mt-4 grid grid-cols-2 gap-3 text-sm font-bold text-slate-800">
-                            <span className="rounded-xl bg-stone-100 px-3 py-2">React</span>
-                            <span className="rounded-xl bg-stone-100 px-3 py-2">MongoDB</span>
-                            <span className="rounded-xl bg-stone-100 px-3 py-2">Redux</span>
-                            <span className="rounded-xl bg-stone-100 px-3 py-2">TinyMCE</span>
-                        </div>
-                    </div>
-                </section>
-                <div className="mb-8 flex flex-col justify-between gap-4 border-t border-slate-200 pt-8 md:flex-row md:items-end">
-                    <div>
-                        <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">Featured posts</p>
-                        <h2 className="text-3xl font-black tracking-tight text-slate-950 md:text-5xl">Latest writing</h2>
-                    </div>
-                    <p className="max-w-xl text-slate-600">Search and read published posts from the MongoDB-backed content collection.</p>
                 </div>
-                <form onSubmit={submitSearch} className="mb-8 flex gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+            </div>
+
+            <Container>
+                {/* Section header + search */}
+                <div className="mt-14 mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                    <div>
+                        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.22em] text-stone-500">Featured content</p>
+                        <h2 className="font-serif text-4xl font-semibold tracking-tight text-stone-950 md:text-5xl">Latest writing</h2>
+                    </div>
+                    <p className="max-w-sm text-sm text-stone-500">Discover and read published articles from our community of writers.</p>
+                </div>
+
+                <form onSubmit={submitSearch} className="mb-10 flex gap-2">
                     <input
                         value={query}
-                        onChange={(event) => setQuery(event.target.value)}
-                        className="min-w-0 flex-1 rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
-                        placeholder="Search posts by title"
+                        onChange={(e) => setQuery(e.target.value)}
+                        className="min-w-0 flex-1 rounded-sm border border-stone-300 px-4 py-3 text-sm outline-none transition-colors focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
+                        placeholder="Search posts by title…"
                     />
-                    <button className="rounded-xl bg-slate-950 px-5 py-3 font-semibold text-white hover:bg-emerald-700">Search</button>
+                    <button
+                        type="submit"
+                        className="rounded-sm bg-stone-950 px-6 py-3 text-[11px] font-bold uppercase tracking-widest text-white transition-colors duration-150 hover:bg-stone-700 active:scale-[0.98]"
+                    >
+                        Search
+                    </button>
                 </form>
+
+                {/* Card grid */}
                 <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-                    {posts.map((post) => (
-                        <div key={post.$id}>
+                    {posts.map((post, i) => (
+                        <div
+                            key={post.$id}
+                            className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-500"
+                            style={{ animationDelay: `${i * 75}ms` }}
+                        >
                             <PostCard {...post} />
                         </div>
                     ))}
@@ -160,3 +183,4 @@ function Home() {
 }
 
 export default Home
+

@@ -45,21 +45,21 @@ function Signup() {
 
     return (
         <div className='flex items-center justify-center px-4'>
-            <div className={`mx-auto w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-sm`}>
+            <div className={`mx-auto w-full max-w-md rounded-sm border border-stone-200 bg-white p-8 shadow-sm`}>
                 <div className="mb-2 flex justify-center">
                     <span className="inline-block w-full max-w-[100px]">
                         <Logo width="100%" />
                     </span>
                 </div>
-                <h2 className="text-center text-2xl font-bold leading-tight text-slate-950">Sign up to create account</h2>
-                <p className="mt-2 text-center text-base text-slate-600">
-                    Already have an Account?&nbsp;
-                    <Link to="/login" className='font-semibold text-emerald-700 transition-all duration-200 hover:underline'>
+                <h2 className="text-center font-serif text-3xl font-semibold leading-tight text-stone-950">Sign up</h2>
+                <p className="mt-2 text-center text-sm text-stone-600">
+                    Already have an account?&nbsp;
+                    <Link to="/login" className='font-semibold text-stone-950 transition-all duration-200 hover:underline'>
                         Sign In
                     </Link>
                 </p>
                 {error && (
-                    <div className="mt-8 rounded-md bg-red-50 px-3 py-2 text-center text-sm font-medium text-red-700">
+                    <div className="mt-8 rounded-sm bg-red-50 px-3 py-2 text-center text-sm font-medium text-red-700">
                         <p>{error}</p>
                         {accountExists && (
                             <Link to="/login" className="mt-1 inline-block font-semibold text-red-800 underline underline-offset-2">
@@ -104,7 +104,7 @@ function Signup() {
                             })}
                         />
 
-                        <Button type="submit" className='w-full hover:bg-emerald-700'>
+                        <Button type="submit" className='w-full hover:bg-stone-700'>
                             Create Account
                         </Button>
                     </div>

@@ -20,15 +20,30 @@ function EditPost() {
         }
     }, [slug, navigate])
     return post ? (
-        <div className='bg-stone-50 py-10'>
-            <Container>
-                <div className="mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-                    <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">Edit</p>
-                    <h1 className="text-4xl font-black tracking-tight text-slate-950 md:text-6xl">Update your post</h1>
-                    <p className="mt-4 max-w-2xl text-slate-600">Refine content, metadata, and publication status without leaving the author studio.</p>
-                </div>
-                <PostForm post={post} />
-            </Container>
+        <div className='w-full bg-white pt-16 md:pt-20'>
+            {/* Hero section */}
+            <div className="border-b border-stone-200 bg-stone-50 py-16">
+                <Container>
+                    <div className="mx-auto max-w-3xl">
+                        <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.25em] text-stone-500">
+                            Edit
+                        </p>
+                        <h1 className="font-serif text-5xl font-semibold tracking-tight text-stone-950 md:text-6xl">
+                            Update your post
+                        </h1>
+                        <p className="mt-5 text-base leading-7 text-stone-600">
+                            Refine your content, update images and tags, or change publication status.
+                        </p>
+                    </div>
+                </Container>
+            </div>
+
+            {/* Form section */}
+            <div className="bg-stone-50 py-12">
+                <Container>
+                    <PostForm post={post} />
+                </Container>
+            </div>
         </div>
     ) : null
 }

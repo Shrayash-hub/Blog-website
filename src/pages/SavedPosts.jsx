@@ -17,27 +17,47 @@ function SavedPosts() {
     }, [userData?.$id]);
 
     return (
-        <div className="bg-stone-50 py-10">
-            <Container>
-                <div className="mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-                    <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">Library</p>
-                    <h1 className="text-4xl font-black tracking-tight text-slate-950 md:text-6xl">Saved posts</h1>
-                    <p className="mt-4 max-w-2xl text-slate-600">A personal reading queue for articles worth returning to.</p>
-                </div>
+        <div className="w-full bg-white pt-16 md:pt-20">
+            {/* Hero section */}
+            <div className="border-b border-stone-200 bg-stone-50 py-16">
+                <Container>
+                    <div className="mx-auto max-w-3xl text-center">
+                        <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.25em] text-stone-500">
+                            Personal library
+                        </p>
+                        <h1 className="font-serif text-5xl font-semibold tracking-tight text-stone-950 md:text-6xl">
+                            Saved posts
+                        </h1>
+                        <p className="mt-5 text-base leading-7 text-stone-600">
+                            A personal reading queue for articles worth returning to.
+                        </p>
+                    </div>
+                </Container>
+            </div>
 
-                {posts.length ? (
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {posts.map((post) => (
-                            <PostCard key={post.$id} {...post} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-                        <h2 className="text-xl font-bold text-slate-950">Nothing saved yet</h2>
-                        <p className="mt-2 text-slate-600">Bookmark posts from the article page and they will show here.</p>
-                    </div>
-                )}
-            </Container>
+            {/* Posts grid */}
+            <div className="bg-stone-50 py-12">
+                <Container>
+                    {posts.length ? (
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            {posts.map((post, i) => (
+                                <div
+                                    key={post.$id}
+                                    className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-500"
+                                    style={{ animationDelay: `${i * 75}ms` }}
+                                >
+                                    <PostCard {...post} index={i} />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="rounded-sm border border-dashed border-stone-300 bg-white p-10 text-center">
+                            <h2 className="font-serif text-2xl font-semibold text-stone-950">Nothing saved yet</h2>
+                            <p className="mt-3 text-stone-500">Bookmark posts from article pages and they will appear here.</p>
+                        </div>
+                    )}
+                </Container>
+            </div>
         </div>
     );
 }

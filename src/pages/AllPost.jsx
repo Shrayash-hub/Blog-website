@@ -12,23 +12,42 @@ function AllPosts() {
         })
     }, [])
     return (
-        <div className='w-full bg-stone-50 py-10'>
-            <Container>
-                <div className="mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-                    <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">Archive</p>
-                    <h1 className="text-4xl font-black tracking-tight text-slate-950 md:text-6xl">All posts</h1>
-                    <p className="mt-4 max-w-2xl text-slate-600">Browse every published article in one place.</p>
+        <div className='w-full bg-white'>
+            {/* Full-bleed hero matching Home page pattern */}
+            <div className="relative flex min-h-[640px] w-full flex-col justify-center overflow-hidden bg-stone-800 bg-cover bg-center pt-16 md:min-h-[740px] md:pt-20" style={{ backgroundImage: "url('/all-posts-bg.png')" }}>
+                {/* Dark gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/30 to-black/15" />
+                <div className="relative mx-auto max-w-7xl px-6 py-24 text-center md:py-36">
+                    <p className="motion-safe:animate-in motion-safe:fade-in motion-safe:duration-500 mb-3 text-[11px] font-bold uppercase tracking-[0.25em] text-white/70">
+                        Complete library
+                    </p>
+                    <h1 className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 mx-auto max-w-3xl font-serif text-5xl font-semibold leading-[1.1] text-white md:text-6xl">
+                        Every story, in one place.
+                    </h1>
+                    <p className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-150 mx-auto mt-5 max-w-xl text-base leading-7 text-white/75 md:text-lg">
+                        Dive into our complete collection of articles, essays, and stories — written by a growing community of passionate voices from around the world.
+                    </p>
                 </div>
-                <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-                    {posts.map((post) => (
-                        <div key={post.$id}>
-                            <PostCard {...post} />
-                        </div>
-                    ))}
-                </div>
-            </Container>
+            </div>
+
+            <div className="bg-stone-50 py-12">
+                <Container>
+                    <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+                        {posts.map((post, i) => (
+                            <div
+                                key={post.$id}
+                                className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-500"
+                                style={{ animationDelay: `${i * 75}ms` }}
+                            >
+                                <PostCard {...post} index={i} />
+                            </div>
+                        ))}
+                    </div>
+                </Container>
+            </div>
         </div>
     )
 }
 
 export default AllPosts
+

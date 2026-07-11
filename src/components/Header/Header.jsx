@@ -8,76 +8,80 @@ function Header() {
   const location = useLocation()
 
   const navItems = [
-    {
-      name: 'Home',
-      slug: "/",
-      active: true
-    }, 
-    {
-      name: "Explore",
-      slug: "/posts",
-      active: true,
-    },
-    {
-      name: "Search",
-      slug: "/search",
-      active: true,
-    },
-    {
-      name: "Login",
-      slug: "/login",
-      active: !authStatus,
-  },
-  {
-      name: "Signup",
-      slug: "/signup",
-      active: !authStatus,
-  },
-  {
-      name: "Dashboard",
-      slug: "/dashboard",
-      active: authStatus,
-  },
-  {
-      name: "Write",
-      slug: "/dashboard/posts/new",
-      active: authStatus,
-  },
+    { name: 'Home',      slug: "/",                    active: true },
+    { name: "Explore",   slug: "/posts",               active: true },
+    { name: authStatus ? "Write" : "Login to write", slug: authStatus ? "/dashboard/posts/new" : "/login", active: true },
+    { name: "Login",     slug: "/login",               active: !authStatus },
+    { name: "Signup",    slug: "/signup",              active: !authStatus },
+    { name: "Dashboard", slug: "/dashboard",           active: authStatus },
+    { name: "Write",     slug: "/dashboard/posts/new", active: authStatus },
   ]
 
-
   return (
-    <header className='sticky top-0 z-50 border-b border-slate-200/80 bg-stone-50/90 py-3 backdrop-blur-xl'>
+    <header className='absolute top-0 z-50 w-full bg-transparent'>
       <Container>
-        <nav className='flex flex-col gap-3 md:flex-row md:items-center'>
-          <div className='mr-4 flex items-center justify-between'>
-            <Link to='/' className="text-xl font-black tracking-tight text-slate-950">
-              <Logo width='132px'   />
-            </Link>
-          </div>
-          <ul className='ml-auto flex flex-wrap items-center gap-1.5'>
-            {navItems.map((item) => 
-            item.active ? (
+        <nav className='flex h-16 items-center justify-between gap-8 border-b border-white/20 md:h-20'>
+          {/* Logo */}
+          <Link to='/' className="shrink-0">
+            <Logo width='120px' variant="dark" />
+          </Link>
+
+          {/* Center nav links */}
+          <ul className='hidden flex-1 items-center justify-center gap-8 md:flex'>
+            {navItems.slice(0, 3).map((item) => (
               <li key={item.name}>
                 <button
-                onClick={() => navigate(item.slug)}
-                className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold duration-200 ${
-                  location.pathname === item.slug
-                    ? "bg-slate-950 text-white shadow-sm"
-                    : "text-slate-600 hover:bg-white hover:text-slate-950 hover:shadow-sm"
-                }`}
-                >{item.name}</button>
+                  onClick={() => navigate(item.slug)}
+                  className={`rounded border px-5 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors duration-200 ${
+                    location.pathname === item.slug
+                      ? 'border-white bg-white/10 text-white'
+                      : 'border-white/40 text-white/70 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  {item.name}
+                </button>
               </li>
-            ) : null
-            )}
-            {authStatus && (
-              <li>
-                <LogoutBtn />
-              </li>
-            )}
+            ))}
           </ul>
+
+          {/* Right side actions */}
+          <div className='flex items-center gap-4'>
+            {/* Search icon */}
+            <button
+              onClick={() => navigate('/search')}
+              className="text-white/70 transition-colors hover:text-white"
+              aria-label="Search"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+
+            {authStatus ? (
+              <>
+                {/* User icon */}
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="text-white/70 transition-colors hover:text-white"
+                  aria-label="Dashboard"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </button>
+                <LogoutBtn />
+              </>
+            ) : (
+              <button
+                onClick={() => navigate('/login')}
+                className="rounded border border-white/40 px-5 py-2 text-[11px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-white/10"
+              >
+                Sign in
+              </button>
+            )}
+          </div>
         </nav>
-        </Container>
+      </Container>
     </header>
   )
 }

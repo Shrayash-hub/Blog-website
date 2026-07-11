@@ -22,41 +22,67 @@ function Search() {
     };
 
     return (
-        <div className="bg-stone-50 py-10">
-            <Container>
-                <div className="mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-                    <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">Discover</p>
-                    <h1 className="text-4xl font-black tracking-tight text-slate-950 md:text-6xl">Search posts</h1>
-                    <p className="mt-4 max-w-2xl text-slate-600">Find articles by title.</p>
+        <div className="w-full bg-white">
+            {/* Full-bleed hero matching Home/AllPost pattern */}
+            {/* TODO: Replace '/search-bg.jpg' with your actual background image */}
+            <div className="relative flex min-h-[640px] w-full flex-col justify-center overflow-hidden bg-stone-800 bg-cover bg-center pt-16 md:min-h-[740px] md:pt-20" style={{ backgroundImage: "url('/search-bg.png')" }}>
+                {/* Dark gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/45 to-black/20" />
+                <div className="relative mx-auto max-w-7xl px-6 py-24 text-center md:py-36">
+                    <p className="motion-safe:animate-in motion-safe:fade-in motion-safe:duration-500 mb-3 text-[11px] font-bold uppercase tracking-[0.25em] text-white/70">
+                        Find your next read
+                    </p>
+                    <h1 className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 mx-auto max-w-3xl font-serif text-5xl font-semibold leading-[1.1] text-white md:text-6xl">
+                        Search posts
+                    </h1>
+                    <p className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-150 mx-auto mt-5 max-w-xl text-base leading-7 text-white/75 md:text-lg">
+                        Find articles by title, topic, or author — discover stories that match exactly what you're looking for.
+                    </p>
                 </div>
+            </div>
 
-                <form onSubmit={submitSearch} className="mb-8 flex gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-                    <input
-                        value={query}
-                        onChange={(event) => setQuery(event.target.value)}
-                        className="min-w-0 flex-1 rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
-                        placeholder="Search by title"
-                    />
-                    <button className="rounded-xl bg-slate-950 px-5 py-3 font-semibold text-white hover:bg-emerald-700">
-                        Search
-                    </button>
-                </form>
+            <div className="bg-stone-50 py-12">
+                <Container>
+                    {/* Search form */}
+                    <form onSubmit={submitSearch} className="mb-10 flex gap-2">
+                        <input
+                            value={query}
+                            onChange={(event) => setQuery(event.target.value)}
+                            className="min-w-0 flex-1 rounded-sm border border-stone-300 px-4 py-3 text-sm outline-none transition-colors focus:border-stone-950 focus:ring-2 focus:ring-stone-950/10"
+                            placeholder="Search posts by title…"
+                        />
+                        <button
+                            type="submit"
+                            className="rounded-sm bg-stone-950 px-6 py-3 text-[11px] font-bold uppercase tracking-widest text-white transition-colors duration-150 hover:bg-stone-700 active:scale-[0.98]"
+                        >
+                            Search
+                        </button>
+                    </form>
 
-                {posts.length ? (
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {posts.map((post) => (
-                            <PostCard key={post.$id} {...post} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-                        <h2 className="text-xl font-bold text-slate-950">No results</h2>
-                        <p className="mt-2 text-slate-600">Try another search term or browse all posts.</p>
-                    </div>
-                )}
-            </Container>
+                    {/* Results grid */}
+                    {posts.length ? (
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            {posts.map((post, i) => (
+                                <div
+                                    key={post.$id}
+                                    className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-500"
+                                    style={{ animationDelay: `${i * 75}ms` }}
+                                >
+                                    <PostCard {...post} index={i} />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="rounded-sm border border-dashed border-stone-300 bg-white p-10 text-center">
+                            <h2 className="font-serif text-2xl font-semibold text-stone-950">No results found</h2>
+                            <p className="mt-3 text-stone-500">Try different keywords or browse all posts.</p>
+                        </div>
+                    )}
+                </Container>
+            </div>
         </div>
     );
 }
 
 export default Search;
+

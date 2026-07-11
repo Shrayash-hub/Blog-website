@@ -18,39 +18,88 @@ function AuthorProfile() {
     }, [id]);
 
     return (
-        <div className="bg-stone-50 py-10">
-            <Container>
-                <section className="mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-                    <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-emerald-700">Author</p>
-                    <h1 className="text-4xl font-black tracking-tight text-slate-950 md:text-6xl">
-                        {profile?.name || "Blog author"}
-                    </h1>
-                    <p className="mt-4 max-w-3xl text-slate-600">
-                        {profile?.bio || "This author has not added a public bio yet."}
-                    </p>
-                    <div className="mt-5 flex flex-wrap gap-3 text-sm font-semibold">
-                        {profile?.website && <a className="text-emerald-700 hover:underline" href={profile.website}>Website</a>}
-                        {profile?.github && <a className="text-emerald-700 hover:underline" href={profile.github}>GitHub</a>}
-                        {profile?.linkedin && <a className="text-emerald-700 hover:underline" href={profile.linkedin}>LinkedIn</a>}
+        <div className="w-full bg-white pt-16 md:pt-20">
+            {/* Header section with author info */}
+            <div className="border-b border-stone-200 bg-stone-50 py-16">
+                <Container>
+                    <div className="mx-auto max-w-3xl">
+                        <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.25em] text-stone-500">
+                            Author profile
+                        </p>
+                        <h1 className="font-serif text-5xl font-semibold tracking-tight text-stone-950 md:text-6xl">
+                            {profile?.name || "Blog author"}
+                        </h1>
+                        <p className="mt-5 text-base leading-7 text-stone-600">
+                            {profile?.bio || "This author has not added a public bio yet."}
+                        </p>
+                        {(profile?.website || profile?.github || profile?.linkedin) && (
+                            <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">
+                                {profile?.website && (
+                                    <a
+                                        className="rounded-sm border border-stone-200 bg-white px-4 py-2 transition-colors hover:bg-stone-950 hover:text-white"
+                                        href={profile.website}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        Website
+                                    </a>
+                                )}
+                                {profile?.github && (
+                                    <a
+                                        className="rounded-sm border border-stone-200 bg-white px-4 py-2 transition-colors hover:bg-stone-950 hover:text-white"
+                                        href={profile.github}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        GitHub
+                                    </a>
+                                )}
+                                {profile?.linkedin && (
+                                    <a
+                                        className="rounded-sm border border-stone-200 bg-white px-4 py-2 transition-colors hover:bg-stone-950 hover:text-white"
+                                        href={profile.linkedin}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        LinkedIn
+                                    </a>
+                                )}
+                            </div>
+                        )}
                     </div>
-                </section>
+                </Container>
+            </div>
 
-                <div className="mb-4">
-                    <h2 className="text-2xl font-black text-slate-950">Published posts</h2>
-                </div>
+            {/* Posts section */}
+            <div className="bg-stone-50 py-12">
+                <Container>
+                    <div className="mb-8">
+                        <h2 className="font-serif text-3xl font-semibold text-stone-950">Published posts</h2>
+                        <p className="mt-2 text-sm text-stone-500">
+                            {posts.length} {posts.length === 1 ? "article" : "articles"}
+                        </p>
+                    </div>
 
-                {posts.length ? (
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {posts.map((post) => (
-                            <PostCard key={post.$id} {...post} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-                        <h2 className="text-xl font-bold text-slate-950">No published posts</h2>
-                    </div>
-                )}
-            </Container>
+                    {posts.length ? (
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            {posts.map((post, i) => (
+                                <div
+                                    key={post.$id}
+                                    className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-500"
+                                    style={{ animationDelay: `${i * 75}ms` }}
+                                >
+                                    <PostCard {...post} index={i} />
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="rounded-sm border border-dashed border-stone-300 bg-white p-10 text-center">
+                            <h2 className="font-serif text-2xl font-semibold text-stone-950">No published posts yet</h2>
+                            <p className="mt-3 text-stone-500">This author hasn't published any articles.</p>
+                        </div>
+                    )}
+                </Container>
+            </div>
         </div>
     );
 }

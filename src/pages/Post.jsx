@@ -60,59 +60,104 @@ export default function Post() {
     };
 
     return post ? (
-        <div className="bg-stone-50 py-10">
-            <Container>
-                <article className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-                    <div className="relative aspect-video w-full bg-stone-100">
-                        {imageUrl && (
-                            <img
-                                src={imageUrl}
-                                alt={post.title}
-                                className="h-full w-full object-cover"
-                                onError={(event) => {
-                                    event.currentTarget.style.display = "none";
-                                }}
-                            />
-                        )}
-                        {!imageUrl && (
-                            <div className="flex h-full items-center justify-center text-sm font-medium text-slate-500">
-                                Featured image unavailable
-                            </div>
-                        )}
-
-                        <div className="absolute left-5 top-5">
-                            <Button bgColor={bookmark ? "bg-emerald-700" : "bg-white"} textColor={bookmark ? "text-white" : "text-slate-950"} className="rounded-full shadow-sm hover:bg-emerald-700 hover:text-white" onClick={toggleBookmark}>
-                                {bookmark ? "Saved" : "Save"}
-                            </Button>
-                        </div>
-
-                        {isAuthor && (
-                            <div className="absolute right-5 top-5 flex gap-3">
-                                <Link to={`/dashboard/posts/${post.$id}/edit`}>
-                                    <Button bgColor="bg-emerald-600" className="rounded-full shadow-sm hover:bg-emerald-700">
-                                        Edit
-                                    </Button>
-                                </Link>
-                                <Button bgColor="bg-red-600" className="rounded-full shadow-sm hover:bg-red-700" onClick={deletePost}>
-                                    Delete
-                                </Button>
-                            </div>
-                        )}
+        <div className="w-full bg-white pt-16 md:pt-20">
+            {/* Full-width banner image (no overlay) */}
+            <div className="relative aspect-[21/9] w-full overflow-hidden bg-stone-200">
+                {imageUrl ? (
+                    <img
+                        src={imageUrl}
+                        alt={post.title}
+                        className="h-full w-full object-cover transition-opacity duration-300"
+                        onError={(event) => {
+                            event.currentTarget.style.display = "none";
+                        }}
+                    />
+                ) : (
+                    <div className="flex h-full items-center justify-center">
+                        <span className="text-xs font-medium uppercase tracking-widest text-stone-400">Featured image unavailable</span>
                     </div>
-                    <div className="px-6 py-8 md:px-12 md:py-10">
-                        <p className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-emerald-700">Published article</p>
-                        <h1 className="max-w-4xl text-4xl font-black leading-tight tracking-tight text-slate-950 md:text-6xl">{post.title}</h1>
-                        {post.excerpt && <p className="mt-5 max-w-3xl text-lg leading-8 text-slate-600">{post.excerpt}</p>}
-                        <div className="mt-5 flex flex-wrap items-center gap-3 text-sm text-slate-600">
-                            <Link to={`/authors/${post.userID}`} className="font-semibold text-slate-950 hover:text-emerald-700">
-                                {profile?.name || "View author"}
-                            </Link>
-                            {Array.isArray(post.tags) && post.tags.map((tag) => (
-                                <span key={tag} className="rounded-full bg-emerald-50 px-3 py-1 font-medium text-emerald-700">#{tag}</span>
+                )}
+
+                {/* Action buttons overlaid on banner */}
+                <div className="absolute left-6 top-6">
+                    <Button
+                        bgColor={bookmark ? "bg-stone-950" : "bg-white"}
+                        textColor={bookmark ? "text-white" : "text-stone-950"}
+                        className="shadow-sm hover:bg-stone-950 hover:text-white"
+                        onClick={toggleBookmark}
+                    >
+                        {bookmark ? "Saved" : "Save"}
+                    </Button>
+                </div>
+
+                {isAuthor && (
+                    <div className="absolute right-6 top-6 flex gap-2">
+                        <Link to={`/dashboard/posts/${post.$id}/edit`}>
+                            <Button bgColor="bg-stone-700" className="shadow-sm hover:bg-stone-950">
+                                Edit
+                            </Button>
+                        </Link>
+                        <Button bgColor="bg-red-600" className="shadow-sm hover:bg-red-700" onClick={deletePost}>
+                            Delete
+                        </Button>
+                    </div>
+                )}
+            </div>
+
+            {/* Post metadata + content */}
+            <Container>
+                <article className="mx-auto max-w-3xl py-12">
+                    {/* Tags row */}
+                    {Array.isArray(post.tags) && post.tags.length > 0 && (
+                        <div className="mb-4 flex flex-wrap gap-2">
+                            {post.tags.map((tag) => (
+                                <span
+                                    key={tag}
+                                    className="rounded-sm border border-stone-200 bg-stone-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-stone-600"
+                                >
+                                    {tag}
+                                </span>
                             ))}
                         </div>
+                    )}
+
+                    {/* Title */}
+                    <h1 className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 font-serif text-5xl font-bold leading-[1.15] text-stone-950 md:text-6xl">
+                        {post.title}
+                    </h1>
+
+                    {/* Excerpt */}
+                    {post.excerpt && (
+                        <p className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-100 mt-5 text-lg leading-8 text-stone-600">
+                            {post.excerpt}
+                        </p>
+                    )}
+
+                    {/* Author row */}
+                    <div className="motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-700 motion-safe:delay-200 mt-8 flex items-center gap-4 border-y border-stone-200 py-5">
+                        {/* Avatar circle placeholder */}
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-stone-200 text-sm font-bold text-stone-700">
+                            {profile?.name?.[0]?.toUpperCase() || "A"}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                            <Link
+                                to={`/authors/${post.userID}`}
+                                className="block font-semibold text-stone-950 transition-colors hover:text-stone-600"
+                            >
+                                {profile?.name || "View author"}
+                            </Link>
+                            <p className="text-sm text-stone-500">
+                                {new Date(post.$createdAt).toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                })}
+                            </p>
+                        </div>
                     </div>
-                    <div className="browser-css max-w-none border-t border-slate-100 px-6 pb-12 pt-8 md:px-12">
+
+                    {/* Content body */}
+                    <div className="browser-css motion-safe:animate-in motion-safe:fade-in motion-safe:duration-1000 motion-safe:delay-300 mt-10">
                         {parse(post.content)}
                     </div>
                 </article>

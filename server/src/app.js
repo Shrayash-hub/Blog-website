@@ -18,7 +18,7 @@ app.use(
         origin: (origin, callback) => {
             // Read the env var at request time so ESM-hoisting of app.js
             // before dotenv.config() runs doesn't capture `undefined`.
-            const allowed = process.env.CORS_ORIGIN || "http://localhost:5174";
+            const allowed = process.env.CORS_ORIGIN || "http://localhost:5173";
             callback(null, origin === allowed ? origin : false);
         },
         credentials: true,
