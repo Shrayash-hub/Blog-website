@@ -38,6 +38,10 @@ const toFormData = ({ title, content, excerpt, tags, status, featuredImage }) =>
         formData.append("tags", Array.isArray(tags) ? tags.join(",") : tags);
     }
     if (featuredImage instanceof File) {
+        // New file selected — send as multipart so multer saves it to disk.
+        formData.append("featuredImage", featuredImage);
+    } else if (typeof featuredImage === "string" && featuredImage) {
+        // Already-stored filename — pass as a plain field.
         formData.append("featuredImage", featuredImage);
     }
     return formData;

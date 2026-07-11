@@ -1,81 +1,55 @@
-/**
- * authApi.js
- *
- * Wraps the /api/v1/auth/* endpoints.
- *
- * Shape normalization
- * -------------------
- * The backend returns MongoDB documents whose primary key is `_id`.
- * The frontend (authSlice, all components) expects `userData.$id`.
- * `normalizeUser` performs that mapping so no call site needs to change.
- *
- * Endpoints
- * ---------
- *  POST /auth/register   { name, email, password }  → { user, accessToken }
- *  POST /auth/login      { email, password }         → { user, accessToken }
- *  POST /auth/logout     (cookie auth)               → {}
- *  GET  /auth/current-user (cookie auth)             → user object
- */
+import { request } from "./httpClient";
 
-import { request } from "./httpClient.js";
-
-/** Map MongoDB _id → $id so existing components stay unchanged. */
-function normalizeUser(user) {
+// Normalizes our backend's Mongo user shape into what the frontend
+// already expects from Appwrite ($id instead of _id), so authSlice and
+// every component reading userData.$id keeps working unchanged.
+const toAppUser = (user) => {
     if (!user) return null;
     return {
-        ...user,
-        $id: user._id?.toString() ?? user.$id,
+        $id: user._id,
+        name: user.name,
+        email: user.email,
     };
-}
-
-const authApi = {
-    /**
-     * Register a new account.
-     * Returns the normalized user object on success.
-     */
-    async createAccount({ name, email, password }) {
-        const data = await request("/auth/register", {
-            method: "POST",
-            body: { name, email, password },
-        });
-        // data = { user, accessToken }
-        return normalizeUser(data?.user ?? data);
-    },
-
-    /**
-     * Log in with email + password.
-     * Returns the normalized user object (access token is stored in an
-     * HttpOnly cookie by the server; we don't need it client-side).
-     */
-    async login({ email, password }) {
-        const data = await request("/auth/login", {
-            method: "POST",
-            body: { email, password },
-        });
-        return normalizeUser(data?.user ?? data);
-    },
-
-    /**
-     * Log out the current session (clears the server-side cookie).
-     */
-    async logout() {
-        return request("/auth/logout", { method: "POST" });
-    },
-
-    /**
-     * Fetch the currently authenticated user.
-     * Returns null if not logged in (no valid cookie), or the normalized user.
-     */
-    async getCurrentUser() {
-        try {
-            const data = await request("/auth/current-user");
-            return normalizeUser(data);
-        } catch (err) {
-            // 401 just means no active session – not a crash-worthy error.
-            if (err.code === 401 || err.code === 403) return null;
-            throw err;
-        }
-    },
 };
 
-export default authApi;
+// createAccount: register + auto-login, mirroring the old AuthService
+// behavior (Appwrite created the account then immediately logged in).
+async function createAccount({ email, password, name }) {
+    const res = await request("/auth/register", {
+        method: "POST",
+        body: { name, email, password },
+    });
+    return toAppUser(res.data.user);
+}
+
+async function login({ email, password }) {
+    const res = await request("/auth/login", {
+        method: "POST",
+        body: { email, password },
+    });
+    return toAppUser(res.data.user);
+}
+
+// getCurrentUser: returns null instead of throwing when there's no
+// active session, so callers can do `if (user) ...` like before.
+async function getCurrentUser() {
+    try {
+        const res = await request("/auth/current-user");
+        return toAppUser(res.data);
+    } catch {
+        return null;
+    }
+}
+
+async function logout() {
+    try {
+        await request("/auth/logout", { method: "POST" });
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+const authService = { createAccount, login, getCurrentUser, logout };
+
+export default authService;

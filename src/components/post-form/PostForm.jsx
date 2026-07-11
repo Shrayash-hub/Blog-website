@@ -142,49 +142,45 @@ export default function PostForm({ post }) {
 
         try {
             if (post) {
-                // Edit mode: agar new image select ki hai to pehle upload karte hain.
-                const preparedImage = normalizedData.image?.[0] ? await resizeFeaturedImage(normalizedData.image[0]) : null;
-                const file = preparedImage ? await postService.uploadFile(preparedImage) : null;
+                // Edit mode: resize new image if selected, then send the File
+                // directly to updatePost (which sends it as multipart/form-data).
+                // If no new image was selected, featuredImage is left undefined
+                // so the backend keeps the existing one.
+                const rawImage = normalizedData.image?.[0] || null;
+                const preparedImage = rawImage ? await resizeFeaturedImage(rawImage) : null;
 
-                if (preparedImage && !file) {
-                    setFormError("Image upload failed. Please try again with a smaller image.");
-                    return;
-                }
-
-                if (file) {
-                    // Old file deleted automatically by the backend on update.
-                }
-
-                // Post update karte hain; image change nahi hui to featuredImage undefined rahega.
                 const dbPost = await postService.updatePost(post.$id, {
                     ...normalizedData,
                     tags: normalizedData.tags ? normalizedData.tags.split(",").map((tag) => tag.trim()).filter(Boolean) : [],
-                    featuredImage: file ? file.filename : undefined,
+                    featuredImage: preparedImage ?? undefined,
                 });
 
                 if (dbPost) {
-                    // Update ke baad post detail page par redirect karte hain.
                     navigate(`/post/${dbPost.$id}`);
                     return;
                 }
 
                 setFormError("Post could not be saved. Please try again.");
             } else {
-                // Add mode: new post create karne se pehle image upload karna zaroori hai.
-                const preparedImage = await resizeFeaturedImage(normalizedData.image?.[0]);
-                const file = preparedImage ? await postService.uploadFile(preparedImage) : null;
-
-                if (!file) {
-                    setFormError("Image upload failed. Please choose a featured image and try again.");
+                // Add mode: resize the selected image then send it as a File.
+                // The backend's upload.single("featuredImage") middleware handles
+                // saving it to disk; no separate /upload pre-step needed.
+                const rawImage = normalizedData.image?.[0];
+                if (!rawImage) {
+                    setFormError("Please choose a featured image.");
                     return;
                 }
 
-                normalizedData.featuredImage = file.filename;
+                const preparedImage = await resizeFeaturedImage(rawImage);
+                if (!preparedImage) {
+                    setFormError("Image processing failed. Please try a different image.");
+                    return;
+                }
 
-                // Current logged-in user ki ID ke saath post create hota hai.
                 const dbPost = await postService.createPost({
                     ...normalizedData,
                     tags: normalizedData.tags ? normalizedData.tags.split(",").map((tag) => tag.trim()).filter(Boolean) : [],
+                    featuredImage: preparedImage,
                     userID: userData.$id,
                 });
 
