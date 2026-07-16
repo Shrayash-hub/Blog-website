@@ -1,21 +1,28 @@
 import {Container, Logo, LogoutBtn} from '../index'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
+import { openAuthModal } from '../../store/uiSlice'
 
 function Header() {
   const authStatus = useSelector((state) => state.auth.status)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const location = useLocation()
 
   const navItems = [
     { name: 'Home',      slug: "/",                    active: true },
     { name: "Explore",   slug: "/posts",               active: true },
-    { name: authStatus ? "Write" : "Login to write", slug: authStatus ? "/dashboard/posts/new" : "/login", active: true },
-    { name: "Login",     slug: "/login",               active: !authStatus },
-    { name: "Signup",    slug: "/signup",              active: !authStatus },
+    { name: authStatus ? "Write" : "Login to write",   slug: authStatus ? "/dashboard/posts/new" : null, active: true, modal: !authStatus },
     { name: "Dashboard", slug: "/dashboard",           active: authStatus },
-    { name: "Write",     slug: "/dashboard/posts/new", active: authStatus },
   ]
+
+  const handleNavClick = (item) => {
+    if (item.modal) {
+      dispatch(openAuthModal('login'))
+    } else if (item.slug) {
+      navigate(item.slug)
+    }
+  }
 
   return (
     <header className='absolute top-0 z-50 w-full bg-transparent'>
@@ -28,12 +35,12 @@ function Header() {
 
           {/* Center nav links */}
           <ul className='hidden flex-1 items-center justify-center gap-8 md:flex'>
-            {navItems.slice(0, 3).map((item) => (
+            {navItems.filter(i => i.active).slice(0, 3).map((item) => (
               <li key={item.name}>
                 <button
-                  onClick={() => navigate(item.slug)}
+                  onClick={() => handleNavClick(item)}
                   className={`rounded border px-5 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors duration-200 ${
-                    location.pathname === item.slug
+                    item.slug && location.pathname === item.slug
                       ? 'border-white bg-white/10 text-white'
                       : 'border-white/40 text-white/70 hover:bg-white/10 hover:text-white'
                   }`}
@@ -59,7 +66,7 @@ function Header() {
 
             {authStatus ? (
               <>
-                {/* User icon */}
+                {/* User icon → Dashboard */}
                 <button
                   onClick={() => navigate('/dashboard')}
                   className="text-white/70 transition-colors hover:text-white"
@@ -72,12 +79,20 @@ function Header() {
                 <LogoutBtn />
               </>
             ) : (
-              <button
-                onClick={() => navigate('/login')}
-                className="rounded border border-white/40 px-5 py-2 text-[11px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-white/10"
-              >
-                Sign in
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => dispatch(openAuthModal('login'))}
+                  className="rounded border border-white/40 px-5 py-2 text-[11px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-white/10"
+                >
+                  Sign in
+                </button>
+                <button
+                  onClick={() => dispatch(openAuthModal('signup'))}
+                  className="rounded bg-white px-5 py-2 text-[11px] font-bold uppercase tracking-widest text-stone-900 transition-colors hover:bg-white/90"
+                >
+                  Sign up
+                </button>
+              </div>
             )}
           </div>
         </nav>
@@ -87,3 +102,4 @@ function Header() {
 }
 
 export default Header
+

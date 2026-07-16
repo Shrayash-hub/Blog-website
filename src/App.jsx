@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import './App.css'
 import authService from "./api/authApi"
 import { login, logout } from "./store/authSlice"
-import { Footer, Header } from './components'
+import { Footer, Header, AuthModal } from './components'
 import { Outlet } from 'react-router-dom'
 
 function App() {
@@ -31,6 +31,8 @@ function App() {
         </main>
         <Footer />
       </div>
+      {/* Global auth modal — rendered outside the page tree so it overlays everything */}
+      <AuthModal />
     </div>
   ) : null
 }

@@ -1,4 +1,5 @@
 import Select from "./Select";
+import AuthModal from "./AuthModal";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import Container from "./container/Container";
@@ -30,4 +31,5 @@ export {
     Input,
     Select,
     Post,
+    AuthModal,
 }
