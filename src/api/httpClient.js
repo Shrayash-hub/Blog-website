@@ -1,5 +1,7 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1";
 
+import { getToken } from "./tokenStore";
+
 // Builds the full public URL for an uploaded file (post image, avatar,
 // standalone upload). Every stored image field is just a filename (see
 // server/src/app.js), so this is the single place that turns a filename
@@ -16,16 +18,28 @@ export const getFileUrl = (filename) => {
 // Central request function. Every api/*.js file goes through this so
 // credentials, JSON parsing, and error shape are handled in one place.
 export async function request(path, { method = "GET", body, isFormData = false } = {}) {
+    const token = getToken();
+
     const options = {
         method,
-        credentials: "include", // sends/receives the httpOnly JWT cookies
+        // Cookies are still sent when same-origin (e.g. local dev), but
+        // in the deployed cross-origin setup (S3 frontend + EC2 backend,
+        // both on plain HTTP) browsers block cross-site cookies without
+        // HTTPS. The Authorization header below is what actually
+        // authenticates requests in that deployed environment.
+        credentials: "include",
+        headers: {},
     };
+
+    if (token) {
+        options.headers["Authorization"] = `Bearer ${token}`;
+    }
 
     if (body !== undefined) {
         if (isFormData) {
             options.body = body; // browser sets the multipart Content-Type
         } else {
-            options.headers = { "Content-Type": "application/json" };
+            options.headers["Content-Type"] = "application/json";
             options.body = JSON.stringify(body);
         }
     }
