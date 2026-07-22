@@ -159,7 +159,7 @@ This project is deployed entirely within the **AWS Free Tier**:
 
 **Shrayash Awasthi**
 - GitHub: [@Shrayash-hub](https://github.com/Shrayash-hub)
-- LinkedIn: [shrayash-awasthi]([https://linkedin.com/in/shrayash-awasthi](https://www.linkedin.com/in/shrayash-awasthi-1524b3326/))
+- LinkedIn: [shrayash-awasthi]([https://linkedin.com/in/shrayash-awasthi](https://www.linkedin.com/in/shrayash-awasthi-1524b3326/)
 
 ---
 
